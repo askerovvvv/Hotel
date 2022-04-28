@@ -2,12 +2,14 @@ from django.contrib.auth import get_user_model
 from django.shortcuts import render
 from rest_framework import status
 from rest_framework.authtoken.views import ObtainAuthToken
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from applications.account.serializers import RegisterSerializer, LoginSerializer, CustomSerializer
+from applications.account.send_mail import send_mail_message
+from applications.account.serializers import RegisterSerializer, LoginSerializer, CustomSerializer, ForgotSerializer, \
+    ForgotCompleteSerializer
 
 User = get_user_model()
 
@@ -20,18 +22,6 @@ class RegisterApiView(APIView):
             message = 'Отправлен активационный код'
             return Response(message, status=201)
         return Response(status=status.HTTP_400_BAD_REQUEST)       # else
-
-
-class ActivateView(APIView):
-    def get(self, request, activation_code):
-        try:
-            user = User.objects.get(activation_code=activation_code) #@@@@@@@@@@@@@@@@@@@@@@@@@@@
-            user.is_active = True
-            user.activation_code = '' #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-            user.save()
-            return Response("Ваш аккаунт активен!")
-        except User.DoesNotExist:
-            return Response('Активационный код не действителен!')
 
 
 class LoginView(ObtainAuthToken):
@@ -48,3 +38,32 @@ class CustomView(ListAPIView):
         queryset = super().get_queryset()
         queryset = queryset.filter(email=user)
         return queryset
+
+
+class ActivateView(APIView):
+    def get(self, request, activation_code):
+        try:
+            user = User.objects.get(activation_code=activation_code) #@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            user.is_active = True
+            user.activation_code = '' #@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+            user.save()
+            return Response("Ваш аккаунт активен!")
+        except User.DoesNotExist:
+            return Response('Активационный код не действителен!')
+
+
+class ForgotPasswordView(APIView):
+    def post(self, request):
+        serializer = ForgotSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.send_code()
+            return Response('Вам отправлено письмо для востановления пароля')
+
+
+class ForgotCompletePasswordView(APIView):
+    def post(self, request):
+        serializer = ForgotCompleteSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.set_new_password()
+            return Response('Успешно изменен')
+

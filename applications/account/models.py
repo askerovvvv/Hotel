@@ -52,3 +52,4 @@ class MyUser(AbstractUser):
 
 
 
+

@@ -42,3 +42,10 @@ class Element(models.Model):
 class ElementImage(models.Model):
     image = models.ImageField(upload_to='imagesfromsite')
     element = models.ForeignKey(Element, related_name='image', on_delete=models.CASCADE)
+
+
+class FavouriteElement(models.Model):
+    user = models.ForeignKey(User, related_name='favourite', on_delete=models.CASCADE)
+    element = models.ForeignKey(Element, related_name='favourite', on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+

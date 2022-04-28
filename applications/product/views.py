@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
-from rest_framework.decorators import action
+from rest_framework.decorators import action, api_view
 from rest_framework.filters import SearchFilter
+from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -66,3 +67,38 @@ class ElementViewSet(ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+
+class Favourite(ListCreateAPIView):
+    queryset = FavouriteElement.objects.all()
+    serializer_class = FavouriteElementSerializer
+
+    # def post(self, request, *args, **kwargs):
+    #     obj = request.data
+    #     print(obj)
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset()
+        queryset = queryset.filter(user=user)
+        return queryset
+
+    def perform_create(self, serializer):
+        # print('\n\n', self.request.data, '\n\n')
+        serializer.save(user=self.request.user)
+
+
+    # def music_detail(request, id):
+    #     try:
+    #         music = Music.objects.get(id=id)
+    #         serializer = MusicSerializer(music, many=False)
+    #         return Response(serializer.data)
+    #     except Music.DoesNotExist:
+    #         raise Http404
+    #
+
+
+
+    # def retrieve(self, request, *args, **kwargs):
+    #     instance = self.get_object()
+    #     serializer = self.get_serializer(instance)
+    #     return Response(serializer.data)
