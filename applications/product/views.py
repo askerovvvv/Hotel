@@ -7,12 +7,16 @@ from rest_framework.generics import CreateAPIView, ListAPIView, ListCreateAPIVie
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from applications.product.models import *
+from applications.product.sendmessage import sendTelegram
 from applications.product.serializers import *
 from applications.review.models import Like, Rating
 from applications.review.serializers import RatingSerializer
+from parser import main
 
 
 class LargeResultsSetPagination(PageNumberPagination):
@@ -87,15 +91,47 @@ class Favourite(ListCreateAPIView):
         serializer.save(user=self.request.user)
 
 
-    # def music_detail(request, id):
-    #     try:
-    #         music = Music.objects.get(id=id)
-    #         serializer = MusicSerializer(music, many=False)
-    #         return Response(serializer.data)
-    #     except Music.DoesNotExist:
-    #         raise Http404
-    #
+# TODO fawf
+class ReservationView(CreateAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
 
+
+    def perform_create(self, serializer, ):
+        serializer.save(user=self.request.user)
+
+
+class ReservationHistory(ListAPIView):
+    queryset = Reservation.objects.all()
+    serializer_class = ReservationSerializer
+
+    def perform_create(self, serializer,):
+        serializer.save(user=self.request.user)
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = super().get_queryset()
+        queryset = queryset.filter(user=user)
+        return queryset
+
+
+@api_view(['GET'])
+def create_hotel_view(request):
+    hotels = main()
+    for i in hotels:
+        title = i.get('title')
+        rating = i.get('rating')
+        ratingcount = i.get('ratingcount')
+        image = i.get('image')
+
+        HotelsIk.objects.create(title=title, ratingcount=ratingcount, rating=rating, image=image)
+    return Response(hotels)
+
+
+
+
+#
+#
 
 
     # def retrieve(self, request, *args, **kwargs):

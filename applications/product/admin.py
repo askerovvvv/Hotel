@@ -4,6 +4,8 @@ from applications.product.models import *
 
 
 admin.site.register(Category)
+admin.site.register(Reservation)
+admin.site.register(HotelsIk)
 
 
 class ImageInAdmin(admin.TabularInline):

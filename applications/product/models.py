@@ -49,3 +49,23 @@ class FavouriteElement(models.Model):
     element = models.ForeignKey(Element, related_name='favourite', on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
+
+class Reservation(models.Model):
+    user = models.ForeignKey(User, related_name='reservation', on_delete=models.CASCADE)
+    element = models.ForeignKey(Element, related_name='reservation', on_delete=models.CASCADE)
+    date = models.DateTimeField(auto_now_add=True)
+    phone = models.CharField(max_length=30)
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return f'{self.element.title}'
+
+# TODO few
+
+class HotelsIk(models.Model):
+    title = models.CharField(max_length=100)
+    rating = models.CharField(max_length=20)
+    ratingcount = models.CharField(max_length=20)
+    image = models.ImageField(upload_to='images', blank=True, null=True)
+
+

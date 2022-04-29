@@ -19,6 +19,7 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
+from rest_framework.authtoken.views import obtain_auth_token
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -30,6 +31,7 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
+    path('auth/', include('rest_framework_social_oauth2.urls')),
     path('admin/', admin.site.urls),
     path('account/', include('applications.account.urls')),
     path('api/v1/element/', include('applications.product.urls')),

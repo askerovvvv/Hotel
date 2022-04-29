@@ -43,11 +43,22 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
-
+    # 'social_auth',
     #my apps
     'applications.account',
     'applications.product',
-    'applications.review'
+    'applications.review',
+    'applications.telebot',
+    'oauth2_provider',
+    'social_django',
+    'rest_framework_social_oauth2',
+    # 'social_auth'
+    #
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # 'allauth.socialaccount.providers.vk',
+
 ]
 
 MIDDLEWARE = [
@@ -150,10 +161,23 @@ EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-       'rest_framework.authentication.TokenAuthentication'
+       'rest_framework.authentication.TokenAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ]
 }
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media/' # картинки должны тут хранится
 
+SOCIAL_AUTH_VK_OAUTH2_KEY = '8152405'
+SOCIAL_AUTH_VK_OAUTH2_SECRET = 'wSaiztwLVQvDF9EzALyw'
+#
+
+AUTHENTICATION_BACKENDS = [
+
+	'social_core.backends.vk.VKOAuth2',
+	'rest_framework_social_oauth2.backends.DjangoOAuth2',
+	'django.contrib.auth.backends.ModelBackend',
+
+]

@@ -12,6 +12,10 @@ class UserManager(BaseUserManager):
         user.create_activation_code()
         user.set_password(password)
         user.save(using=self._db)
+
+        # if password:
+        #     user.set_password(password)
+        # user.save(using=self._db)
         return user
 
     def create_user(self, email, password, **extra_fields):
@@ -43,7 +47,7 @@ class MyUser(AbstractUser):
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.email
+        return f'{self.id}'
 
     def create_activation_code(self):
         import uuid
