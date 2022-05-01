@@ -2,6 +2,9 @@ from django.db import models
 
 
 class TeleSettings(models.Model):
+    """
+    Моделька телеграм бота
+    """
     token = models.CharField(max_length=200)
     chat = models.CharField(max_length=200)
     message = models.TextField()

@@ -7,6 +7,9 @@ from applications.review.serializers import ReviewSerializer, RetriveReviewSeria
 
 
 class Review(CreateAPIView):
+    """
+    Представление отзывов
+    """
     queryset = Comment.objects.all()
     serializer_class = ReviewSerializer
 
@@ -15,6 +18,9 @@ class Review(CreateAPIView):
 
 
 class DetailReview(RetrieveAPIView):
+    """
+    Представление для детального отзыва с отзывами
+    """
     serializer_class = RetriveReviewSerializer
     queryset = Element.objects.all()
 

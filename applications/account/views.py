@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from applications.account.send_mail import send_mail_message
+
 from applications.account.serializers import RegisterSerializer, LoginSerializer, CustomSerializer, ForgotSerializer, \
     ForgotCompleteSerializer
 

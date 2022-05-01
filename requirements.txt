@@ -17,3 +17,6 @@ lxml
 django-rest-framework-social-oauth2
 django-allauth
 
+
+celery
+redis

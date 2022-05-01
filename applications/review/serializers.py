@@ -5,12 +5,18 @@ from applications.review.models import Like, Rating, Comment
 
 
 class RatingSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор рейтинга
+    """
     class Meta:
         model = Rating
         fields = ('rating', )
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор отзывов
+    """
     user = serializers.ReadOnlyField(source='user.email')
 
     class Meta:
@@ -19,7 +25,9 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class RetriveReviewSerializer(serializers.ModelSerializer):
-
+    """
+    Сериализатор для детального отзыва
+    """
     class Meta:
         model = Element
         fields = '__all__'

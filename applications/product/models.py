@@ -3,7 +3,11 @@ from django.db import models
 
 User = get_user_model()
 
+
 class Category(models.Model):
+    """
+    Моделька категории
+    """
     title = models.CharField(max_length=100)
     slug = models.SlugField()
     parent = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='category', blank=True, null=True)
@@ -24,6 +28,9 @@ class Category(models.Model):
 
 
 class Element(models.Model):
+    """
+    Моделька отелей
+    """
     user = models.ForeignKey(User, related_name='elements', on_delete=models.CASCADE)
     title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
@@ -40,29 +47,49 @@ class Element(models.Model):
 
 
 class ElementImage(models.Model):
+    """
+    Моделька Фото
+    """
     image = models.ImageField(upload_to='imagesfromsite')
     element = models.ForeignKey(Element, related_name='image', on_delete=models.CASCADE)
 
 
 class FavouriteElement(models.Model):
+    """
+    Моделька избранных отелей
+    """
     user = models.ForeignKey(User, related_name='favourite', on_delete=models.CASCADE)
     element = models.ForeignKey(Element, related_name='favourite', on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
 
 
 class Reservation(models.Model):
+    """
+    Моделька бронировании отели
+    """
     user = models.ForeignKey(User, related_name='reservation', on_delete=models.CASCADE)
     element = models.ForeignKey(Element, related_name='reservation', on_delete=models.CASCADE)
     date = models.DateTimeField(auto_now_add=True)
     phone = models.CharField(max_length=30)
     name = models.CharField(max_length=30)
 
+    confirm_reservation = models.CharField(max_length=8, blank=True)
+
     def __str__(self):
         return f'{self.element.title}'
 
-# TODO few
+    # def create_activation_code(self):
+    #     from django.utils.crypto import get_random_string
+    #     code = get_random_string(8)
+    #     self.confirm_reservation = code
+    #     self.save()
+    #     return code
+
 
 class HotelsIk(models.Model):
+    """
+    Модельки данных с парсинга
+    """
     title = models.CharField(max_length=100)
     rating = models.CharField(max_length=20)
     ratingcount = models.CharField(max_length=20)

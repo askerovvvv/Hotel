@@ -1,7 +1,8 @@
 from django.contrib.auth import get_user_model, authenticate
 from rest_framework import serializers
 
-from applications.account.send_mail import send_mail_message
+# from applications.account.send_mail import send_mail_message
+from my_project.tasks import send_mail_message
 
 User = get_user_model()
 
@@ -25,8 +26,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(**validated_data)
         code = user.activation_code
 
-        send_mail_message(code, user.email, status='register')
-
+        # send_mail_message(code, user.email, status='register')
+        send_mail_message.delay(code, user.email, status='register')
         return user
 
 
@@ -71,7 +72,7 @@ class ForgotSerializer(serializers.Serializer):
         user = User.objects.get(email=email)
         user.create_activation_code()
         user.save()
-        send_mail_message(email=user.email, code=user.activation_code, status='reset_password')
+        send_mail_message.delay(email=user.email, code=user.activation_code, status='reset_password')
 
 
 class ForgotCompleteSerializer(serializers.Serializer):

@@ -20,12 +20,18 @@ from parser import main
 
 
 class LargeResultsSetPagination(PageNumberPagination):
+    """
+    Представление пагинации
+    """
     page_size = 3
     page_size_query_param = 'page_size'
     max_page_size = 100
 
 
 class ElementViewSet(ModelViewSet):
+    """
+    Представление отелей
+    """
     queryset = Element.objects.all()
     serializer_class = ElementSerializer
 
@@ -41,6 +47,15 @@ class ElementViewSet(ModelViewSet):
         else:
             permissions = [IsAuthenticated]
         return [permission() for permission in permissions]
+
+    @action(methods=['POST'], detail=True)
+    def carp(self, request, pk):
+        element_id = Element.objects.get(id=pk)
+        category_of_element = element_id.category
+        recomendation_element = Element.objects.filter(category=category_of_element)
+        serializer = ElementSerializer(recomendation_element, many=True)
+
+        return Response(serializer.data)
 
     @action(methods=['POST'], detail=True)
     def like(self, request, pk):
@@ -73,12 +88,11 @@ class ElementViewSet(ModelViewSet):
 
 
 class Favourite(ListCreateAPIView):
+    """
+    Представление избранных
+    """
     queryset = FavouriteElement.objects.all()
     serializer_class = FavouriteElementSerializer
-
-    # def post(self, request, *args, **kwargs):
-    #     obj = request.data
-    #     print(obj)
 
     def get_queryset(self):
         user = self.request.user
@@ -92,16 +106,23 @@ class Favourite(ListCreateAPIView):
 
 
 # TODO fawf
+
+
 class ReservationView(CreateAPIView):
+    """
+    Представление бронировании отелей
+    """
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
-
 
     def perform_create(self, serializer, ):
         serializer.save(user=self.request.user)
 
 
 class ReservationHistory(ListAPIView):
+    """
+    Представление истории бронировании отелей
+    """
     queryset = Reservation.objects.all()
     serializer_class = ReservationSerializer
 
@@ -117,6 +138,9 @@ class ReservationHistory(ListAPIView):
 
 @api_view(['GET'])
 def create_hotel_view(request):
+    """
+    Представление парсинга
+    """
     hotels = main()
     for i in hotels:
         title = i.get('title')
@@ -128,10 +152,6 @@ def create_hotel_view(request):
     return Response(hotels)
 
 
-
-
-#
-#
 
 
     # def retrieve(self, request, *args, **kwargs):
