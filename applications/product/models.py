@@ -39,7 +39,7 @@ class Element(models.Model):
     category = models.ForeignKey(Category, related_name='elements', on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.id}'
+        return self.title
 
     class Meta:
         verbose_name = 'Отель'

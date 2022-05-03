@@ -11,6 +11,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
+from applications.product.filter import ProductFilter
 from applications.product.models import *
 from applications.product.sendmessage import sendTelegram
 from applications.product.serializers import *
@@ -23,7 +24,7 @@ class LargeResultsSetPagination(PageNumberPagination):
     """
     Представление пагинации
     """
-    page_size = 3
+    page_size = 4
     page_size_query_param = 'page_size'
     max_page_size = 100
 
@@ -37,6 +38,7 @@ class ElementViewSet(ModelViewSet):
 
     pagination_class = LargeResultsSetPagination
     filter_backends = [DjangoFilterBackend, SearchFilter]
+    filterset_class = ProductFilter
     search_fields = ['title', 'description']
 
     def get_permissions(self):
