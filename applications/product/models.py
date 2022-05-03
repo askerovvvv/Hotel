@@ -14,7 +14,7 @@ class Category(models.Model):
 
     def __str__(self):
         if not self.parent:
-            return self.slug
+            return f'{self.id}'
         else:
             return f'{self.parent} --> {self.slug}'
 

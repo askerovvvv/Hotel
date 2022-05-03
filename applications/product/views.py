@@ -49,7 +49,7 @@ class ElementViewSet(ModelViewSet):
         return [permission() for permission in permissions]
 
     @action(methods=['POST'], detail=True)
-    def carp(self, request, pk):
+    def recomendation(self, request, pk):
         element_id = Element.objects.get(id=pk)
         category_of_element = element_id.category
         recomendation_element = Element.objects.filter(category=category_of_element)
@@ -73,7 +73,6 @@ class ElementViewSet(ModelViewSet):
     def rating(self, request, pk):
         serializer = RatingSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
         try:
             obj = Rating.objects.get(element=self.get_object(), user=request.user)
             obj.rating = request.data['rating']
@@ -103,9 +102,6 @@ class Favourite(ListCreateAPIView):
     def perform_create(self, serializer):
         # print('\n\n', self.request.data, '\n\n')
         serializer.save(user=self.request.user)
-
-
-# TODO fawf
 
 
 class ReservationView(CreateAPIView):

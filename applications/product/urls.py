@@ -17,5 +17,5 @@ urlpatterns = [
     path('favourite/', Favourite.as_view()),
     path('parser/', create_hotel_view),
     path('', include(router.urls)),
-    path('favourite-history/', ),
+    # path('favourite-history/', ),
 ]

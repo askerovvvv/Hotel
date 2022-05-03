@@ -72,8 +72,8 @@ class ElementSerializer(serializers.ModelSerializer):
         if instance.rating.all().count() == 0:
             representation['rating'] = rating_result
 
-        else:
-            representation['rating'] = rating_result / instance.rating.all().count
+        # else:
+            # representation['rating'] = rating_result / instance.rating.all().count
 
         return representation
 
