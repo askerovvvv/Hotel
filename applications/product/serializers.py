@@ -73,7 +73,7 @@ class ElementSerializer(serializers.ModelSerializer):
             representation['rating'] = rating_result
 
         else:
-            representation['rating'] = rating_result / instance.rating.all().count
+            representation[' rating'] = rating_result / instance.rating.all().count
 
         return representation
 
@@ -84,9 +84,20 @@ class FavouriteElementSerializer(serializers.ModelSerializer):
     """
 
     user = serializers.ReadOnlyField(source='user.email')
+
     class Meta:
         model = FavouriteElement
         fields = '__all__'
+
+    def create(self, validated_data):
+        request = self.context.get('request')
+        user = request.user
+        product = validated_data.get('product')
+
+        if FavouriteElement.objects.filter(user=user, product=product):
+            return FavouriteElement.objects.get(user=user, product=product)
+        else:
+            return FavouriteElement.objects.create(user=user, product=product)
 
 
 class ReservationSerializer(serializers.ModelSerializer):
